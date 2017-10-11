@@ -15,5 +15,13 @@ return [
             'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+        // Database connection settings
+         "db" => [
+            "host" => "pandora.valueserver.com.br",
+            "dbname" => "tearmcom_earmb_db",
+            "user" => "tearmcom_admin",
+            "pass" => "earmb2017admin"
+        ],
+
     ],
 ];
