@@ -16,11 +16,19 @@ return [
             'level' => \Monolog\Logger::DEBUG,
         ],
         // Database connection settings
-         "db" => [
-            "host" => "pandora.valueserver.com.br",
+        "db" => [
+            /*
+            "host" => "https://pandora.valueserver.com.br",
             "dbname" => "tearmcom_earmb_db",
             "user" => "tearmcom_admin",
             "pass" => "earmb2017admin"
+            */
+            
+            "host" => "localhost",
+            "dbname" => "tearmcom_earmb_db",
+            "user" => "root",
+            "pass" => ""
+            
         ],
 
     ],
