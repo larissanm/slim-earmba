@@ -85,7 +85,7 @@ $app->group('/api', function () use ($app) {
                     return $this->response->withJson("Erro ao adicionar a Rotina. " . $e->getCode(), 500);
                 }
             });
-
+            //selecionar lista de rotinas de um determinado dia
             $app->post('/pesquisar', function ($request, $response) {
                 
                   $idCad=$request->getParam('id_cad');
@@ -103,6 +103,67 @@ $app->group('/api', function () use ($app) {
                       return $this->response->withJson("Erro ao Pesquisar as Rotinas ". $e->getCode() . $e, 500);
                   }
               });
+
+              $app->put('/atualizar', function ($request, $response, $args) {
+                $nome=$request->getParam('nome');
+                $idAtividade=$request->getParam('id_atividade');
+                $clima=$request->getParam('clima');
+                $observacao=$request->getParam('observacao');
+                $local=$request->getParam('local');
+                $horaInicio=$request->getParam('hora_inicio');
+                $horaTermino=$request->getParam('hora_termino');
+            
+                try {
+                    $sql = "UPDATE rotina SET nome=:nome, observacao=:observacao, local=:local , hora_inicio=:hora_inicio, hora_termino=:hora_termino,clima=:clima WHERE id_atividade=:id_atividade";
+            
+                 
+                    
+                    $sth = $this->db->prepare($sql);
+                    $sth->bindParam("nome", $nome);
+                    $sth->bindParam("id_atividade",$idAtividade);
+                    $sth->bindParam("clima",$clima);
+                    $sth->bindParam("observacao",$observacao);
+                    $sth->bindParam("local",$local);
+                    $sth->bindParam("hora_inicio",$horaInicio);
+                    $sth->bindParam("hora_termino",$horaTermino);
+            
+                    $sth->execute();
+            
+                    $result = $sth->rowCount();
+            
+                    if ($result == 1) {
+                        $status = "Atividade atualizada com sucesso!";
+                        return $this->response->withJson($status);
+                    } else {
+                        $status = "Erro ao atualizar Atividade.";
+                        return $this->response->withJson($status);
+                    }
+                } catch (Exception $e) {
+                    return $this->response->withJson("Ocorreu algum erro interno." . $e->getCode(), 500);
+                }
+            });
+
+            $app->delete('/deletar/[{id_atividade}]', function ($request, $response, $args) {
+                $idAtividade=$request->getParam('id_atividade');
+                try {
+                    $sth = $this->db->prepare("DELETE FROM rotina WHERE id_atividade=:id_atividade");
+                    $sth->bindParam("id_atividade", $idAtividade);
+                    $sth->execute();
+            
+                    $result = $sth->rowCount();
+            
+                    if ($result == 1) {
+                        $status = "Rotina deletada com sucesso!";
+                    } else {
+                        $status = "Erro ao deletar a Rotina.";
+                    }
+                    return $this->response->withJson($status);
+                } catch (Exception $e) {
+                    return $this->response->withJson("Ocorreu algum erro interno." . $e->getCode(), 500);
+                }
+            
+            });
+            
             
          });
            
