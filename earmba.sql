@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 22-Out-2017 às 20:53
+-- Generation Time: 04-Nov-2017 às 02:13
 -- Versão do servidor: 10.1.26-MariaDB
 -- PHP Version: 7.1.9
 
@@ -41,21 +41,22 @@ CREATE TABLE `cadastro` (
   `permissao` int(2) NOT NULL,
   `datanasc` date NOT NULL,
   `rg` int(9) NOT NULL,
-  `telefone` varchar(14) NOT NULL
+  `telefone` varchar(14) NOT NULL,
+  `imagem` varchar(255) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `cadastro`
 --
 
-INSERT INTO `cadastro` (`id_cad`, `login`, `id_neuro`, `nome`, `email`, `senha`, `sexo`, `permissao`, `datanasc`, `rg`, `telefone`) VALUES
-(1, 'rafael', NULL, 'Rafael de Vasconcelos', 'fael.vasconcelloz@gmail.com', 'r123r123', 'Masculino', 0, '0000-00-00', 12358, ''),
-(2, 'laura', NULL, 'Laura Arissa', 'moromisato.arissa@gmail.com', '123456', 'Masculino', 0, '0000-00-00', 81238, '(11) 92848-372'),
-(3, 'mateus', NULL, 'Mateus Lara', 'm.lins98@hotmail.com', '123456', 'Masculino', 0, '1998-12-25', 12342, '(11) 92831-772'),
-(4, 'pedro', NULL, 'Pedro Luiz', 'pedroluiz921@hotmail.com', 'p123p123', 'Masculino', 0, '2000-12-23', 19293, '(11) 40239-281'),
-(5, 'raj', NULL, 'Rajnoia', 'rajnoia@raj.com', 'raj123', 'Feminino', 0, '2017-10-04', 11111, '(11) 11111-111'),
-(6, 'medico', NULL, 'medico', 'medico@medico', 'medico123', 'Masculino', 11, '1980-11-11', 123456, '44444444'),
-(7, 'paciente', 6, 'paciente', 'paciente@paceinte', 'paciente', 'Masculino', 33, '1960-03-03', 333333, '33333333');
+INSERT INTO `cadastro` (`id_cad`, `login`, `id_neuro`, `nome`, `email`, `senha`, `sexo`, `permissao`, `datanasc`, `rg`, `telefone`, `imagem`) VALUES
+(1, 'rafael', NULL, 'Rafael de Vasconcelos', 'fael.vasconcelloz@gmail.com', 'r123r123', 'Masculino', 0, '0000-00-00', 12358, '', ''),
+(2, 'laura', NULL, 'Laura Arissa', 'moromisato.arissa@gmail.com', '123456', 'Masculino', 0, '0000-00-00', 81238, '(11) 92848-372', ''),
+(3, 'mateus', NULL, 'Mateus Lara', 'm.lins98@hotmail.com', '123456', 'Masculino', 0, '1998-12-25', 12342, '(11) 92831-772', ''),
+(4, 'pedro', NULL, 'Pedro Luiz', 'pedroluiz921@hotmail.com', 'p123p123', 'Masculino', 0, '2000-12-23', 19293, '(11) 40239-281', ''),
+(5, 'raj', NULL, 'Rajnoia', 'rajnoia@raj.com', 'raj123', 'Feminino', 0, '2017-10-04', 11111, '(11) 11111-111', ''),
+(6, 'medico', NULL, 'medico', 'medico@medico', 'medico123', 'Masculino', 11, '1980-11-11', 123456, '44444444', ''),
+(7, 'paciente', 6, 'paciente', 'paciente@paceinte', 'paciente', 'Masculino', 33, '1960-03-03', 333333, '33333333', '');
 
 -- --------------------------------------------------------
 
@@ -78,11 +79,11 @@ CREATE TABLE `data_clima` (
 CREATE TABLE `medicamentos` (
   `id_remedio` int(11) NOT NULL,
   `nome` varchar(200) NOT NULL,
-  `dosagem` int(11) NOT NULL,
-  `miligramagem` int(11) NOT NULL,
+  `dosagem` varchar(25) NOT NULL,
+  `miligramagem` varchar(25) NOT NULL,
   `id_cad` int(11) NOT NULL,
-  `principio_ativo` int(11) NOT NULL,
-  `intervalo` time NOT NULL
+  `principio_ativo` varchar(100) NOT NULL,
+  `intervalo` varchar(5) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -166,7 +167,9 @@ CREATE TABLE `rotina` (
 
 INSERT INTO `rotina` (`id_atividade`, `nome`, `id_cad`, `clima`, `observacao`, `local`, `hora_inicio`, `hora_termino`, `data`) VALUES
 (13, 'Andar', 7, 'Ensolarado', 'Andou ouvindo Musica', 'Avenida Principal', '12:00', '14:00', '2017-10-22'),
-(14, 'Nadar', 7, 'ensolarado', 'Fez Atividades no Clube AAP', 'Clube AAP', '14:00', '14:30', '2017-10-22');
+(14, 'Nadar', 7, 'ensolarado', 'Fez Atividades no Clube AAP', 'Clube AAP', '14:00', '14:30', '2017-10-22'),
+(15, 'Andar', 7, 'Ensolarado', NULL, 'Praia', '04:04', '05:00', '2017-10-25'),
+(16, 'Jogar PS3', 7, 'Qualquer', 'Jogar ate esquecer q tem q jogar de novo', 'Em casa', '00:00', '10:07', '2017-10-25');
 
 -- --------------------------------------------------------
 
@@ -317,7 +320,7 @@ ALTER TABLE `resposta_vol`
 -- AUTO_INCREMENT for table `rotina`
 --
 ALTER TABLE `rotina`
-  MODIFY `id_atividade` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_atividade` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `teste_stc`
