@@ -45,12 +45,6 @@ $app->group('/api', function () use ($app) {
             }
         });
 
-
-        //grupo medicamentos
-        $app->group('/mendicamentos', function () use ($app) {
-
-        });
-
           //grupo Rotinas
           $app->group('/rotinas', function () use ($app) {
 
@@ -275,8 +269,33 @@ $app->group('/api', function () use ($app) {
                         
                         });
                         
-                        
                      });
+
+        //grupo medicamentos
+         $app->group('/relatorio', function () use ($app) {
+             
+            $app->post('/gerarGrafico', function ($request, $response) {
+                $idCad=$request->getParam('id_cad');
+                $data=$request->getParam('data');
+                $duedt = explode("-", $data);
+                $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
+                $week  = (int)date('W', $date);
+            
+                $sql = "SELECT * FROM nota_diaria WHERE id_cad =:id_cad AND semana=:week ORDER BY data ";
+                try {
+                    $sth = $this->db->prepare($sql);
+
+                    $sth->bindParam("id_cad",$idCad);
+                    $sth->bindParam("week",$week);
+                  
+                    $sth->execute();
+                    $result = $sth->fetchAll();
+                    return $this->response->withJson($result);
+                } catch (PDOException $e) {
+                    return $this->response->withJson("Erro ao Carregar o Grafico ". $e->getCode() . $e, 500);
+                }
+            });
+         });
 
     });
 

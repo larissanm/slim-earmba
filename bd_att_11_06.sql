@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.4
+-- version 4.7.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 04-Nov-2017 às 02:13
--- Versão do servidor: 10.1.26-MariaDB
--- PHP Version: 7.1.9
+-- Generation Time: 06-Set-2017 às 20:07
+-- Versão do servidor: 5.7.17
+-- PHP Version: 5.6.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,10 +19,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `tearmcom_earmb_db`
+-- Database: `earmb_db`
 --
-CREATE DATABASE IF NOT EXISTS `tearmcom_earmb_db` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `tearmcom_earmb_db`;
+CREATE DATABASE IF NOT EXISTS `earmb_db` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `earmb_db`;
 
 -- --------------------------------------------------------
 
@@ -32,31 +32,15 @@ USE `tearmcom_earmb_db`;
 
 CREATE TABLE `cadastro` (
   `id_cad` int(11) NOT NULL,
-  `login` varchar(20) NOT NULL,
   `id_neuro` int(11) DEFAULT NULL,
   `nome` varchar(75) NOT NULL,
   `email` varchar(75) NOT NULL,
-  `senha` varchar(16) NOT NULL,
+  `senha` varchar(30) NOT NULL,
   `sexo` varchar(10) NOT NULL,
   `permissao` int(2) NOT NULL,
-  `datanasc` date NOT NULL,
-  `rg` int(9) NOT NULL,
-  `telefone` varchar(14) NOT NULL,
-  `imagem` varchar(255) DEFAULT NULL
+  `datanasc` int(8) NOT NULL,
+  `rg` int(9) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `cadastro`
---
-
-INSERT INTO `cadastro` (`id_cad`, `login`, `id_neuro`, `nome`, `email`, `senha`, `sexo`, `permissao`, `datanasc`, `rg`, `telefone`, `imagem`) VALUES
-(1, 'rafael', NULL, 'Rafael de Vasconcelos', 'fael.vasconcelloz@gmail.com', 'r123r123', 'Masculino', 0, '0000-00-00', 12358, '', ''),
-(2, 'laura', NULL, 'Laura Arissa', 'moromisato.arissa@gmail.com', '123456', 'Masculino', 0, '0000-00-00', 81238, '(11) 92848-372', ''),
-(3, 'mateus', NULL, 'Mateus Lara', 'm.lins98@hotmail.com', '123456', 'Masculino', 0, '1998-12-25', 12342, '(11) 92831-772', ''),
-(4, 'pedro', NULL, 'Pedro Luiz', 'pedroluiz921@hotmail.com', 'p123p123', 'Masculino', 0, '2000-12-23', 19293, '(11) 40239-281', ''),
-(5, 'raj', NULL, 'Rajnoia', 'rajnoia@raj.com', 'raj123', 'Feminino', 0, '2017-10-04', 11111, '(11) 11111-111', ''),
-(6, 'medico', NULL, 'medico', 'medico@medico', 'medico123', 'Masculino', 11, '1980-11-11', 123456, '44444444', ''),
-(7, 'paciente', 6, 'paciente', 'paciente@paceinte', 'paciente', 'Masculino', 33, '1960-03-03', 333333, '33333333', '');
 
 -- --------------------------------------------------------
 
@@ -79,11 +63,11 @@ CREATE TABLE `data_clima` (
 CREATE TABLE `medicamentos` (
   `id_remedio` int(11) NOT NULL,
   `nome` varchar(200) NOT NULL,
-  `dosagem` varchar(25) NOT NULL,
-  `miligramagem` varchar(25) NOT NULL,
+  `dosagem` int(11) NOT NULL,
+  `miligramagem` int(11) NOT NULL,
   `id_cad` int(11) NOT NULL,
-  `principio_ativo` varchar(100) NOT NULL,
-  `intervalo` varchar(5) NOT NULL
+  `principio_ativo` int(11) NOT NULL,
+  `intervalo` time NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -116,7 +100,7 @@ CREATE TABLE `permissao` (
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `resposta_stc`
+-- Estrutura da tabela `resposta_src`
 --
 
 CREATE TABLE `resposta_stc` (
@@ -154,44 +138,10 @@ CREATE TABLE `rotina` (
   `nome` varchar(72) NOT NULL,
   `id_cad` int(11) NOT NULL,
   `clima` varchar(20) NOT NULL,
-  `observacao` varchar(350) DEFAULT NULL,
+  `observacao` varchar(350) NOT NULL,
   `local` varchar(72) NOT NULL,
-  `hora_inicio` varchar(5) NOT NULL,
-  `hora_termino` varchar(5) NOT NULL,
-  `data` date NOT NULL
+  `duracao` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `rotina`
---
-
-INSERT INTO `rotina` (`id_atividade`, `nome`, `id_cad`, `clima`, `observacao`, `local`, `hora_inicio`, `hora_termino`, `data`) VALUES
-(13, 'Andar', 7, 'Ensolarado', 'Andou ouvindo Musica', 'Avenida Principal', '12:00', '14:00', '2017-10-22'),
-(14, 'Nadar', 7, 'ensolarado', 'Fez Atividades no Clube AAP', 'Clube AAP', '14:00', '14:30', '2017-10-22'),
-(15, 'Andar', 7, 'Ensolarado', NULL, 'Praia', '04:04', '05:00', '2017-10-25'),
-(16, 'Jogar PS3', 7, 'Qualquer', 'Jogar ate esquecer q tem q jogar de novo', 'Em casa', '00:00', '10:07', '2017-10-25');
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `testes`
---
-
-CREATE TABLE `testes` (
-  `login` varchar(10) NOT NULL,
-  `senha` varchar(10) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Extraindo dados da tabela `testes`
---
-
-INSERT INTO `testes` (`login`, `senha`) VALUES
-('asdasds', ''),
-('567', ''),
-('rfa', ''),
-('rafa', 'r123r123'),
-('rafaeee', '123123');
 
 -- --------------------------------------------------------
 
@@ -247,7 +197,7 @@ ALTER TABLE `permissao`
   ADD PRIMARY KEY (`cod_permissao`);
 
 --
--- Indexes for table `resposta_stc`
+-- Indexes for table `resposta_src`
 --
 ALTER TABLE `resposta_stc`
   ADD PRIMARY KEY (`id_resposta_stc`);
@@ -284,56 +234,47 @@ ALTER TABLE `teste_vol`
 -- AUTO_INCREMENT for table `cadastro`
 --
 ALTER TABLE `cadastro`
-  MODIFY `id_cad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
+  MODIFY `id_cad` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `data_clima`
 --
 ALTER TABLE `data_clima`
   MODIFY `id_dataclima` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `nota_diaria`
 --
 ALTER TABLE `nota_diaria`
   MODIFY `id_nota_diaria` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `permissao`
 --
 ALTER TABLE `permissao`
   MODIFY `cod_permissao` int(11) NOT NULL AUTO_INCREMENT;
-
 --
--- AUTO_INCREMENT for table `resposta_stc`
+-- AUTO_INCREMENT for table `resposta_src`
 --
 ALTER TABLE `resposta_stc`
   MODIFY `id_resposta_stc` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `resposta_vol`
 --
 ALTER TABLE `resposta_vol`
   MODIFY `id_resposta_vol` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `rotina`
 --
 ALTER TABLE `rotina`
-  MODIFY `id_atividade` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
+  MODIFY `id_atividade` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `teste_stc`
 --
 ALTER TABLE `teste_stc`
   MODIFY `id_pergunta_stc` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `teste_vol`
 --
 ALTER TABLE `teste_vol`
-  MODIFY `id_perguta_vol` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
+  MODIFY `id_perguta_vol` int(11) NOT NULL AUTO_INCREMENT;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
