@@ -297,6 +297,21 @@ $app->group('/api', function () use ($app) {
             });
          });
 
+         $app->group('/teste', function () use ($app) {
+
+            $app->get('/pesquisarMiniMental', function ($request, $response,$args) {
+                  $sql = "select * from teste_stc";
+                  try {
+                      $sth = $this->db->prepare($sql);
+                      $sth->execute();
+                      $result = $sth->fetchAll();
+                      return $this->response->withJson($result);
+                  } catch (PDOException $e) {
+                      return $this->response->withJson("Erro ao Pesquisar As Perguntas do MiniMental ". $e->getCode() . $e, 500);
+                  }
+              });
+
+        });
     });
 
 });
