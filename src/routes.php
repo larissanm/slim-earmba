@@ -274,20 +274,27 @@ $app->group('/api', function () use ($app) {
         //grupo medicamentos
          $app->group('/relatorio', function () use ($app) {
              
+            $app->get('/receberWeekNumber/[{data}]', function ($request, $response,$args) {
+                  $data=$request->getParam('data');
+                  $duedt = explode("-", $data);
+                  $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
+                  $week  = (int)date('W', $date);
+                  return $this->response->withJson($week);
+              });
+
             $app->post('/gerarGrafico', function ($request, $response) {
                 $idCad=$request->getParam('id_cad');
-                $data=$request->getParam('data');
-                $duedt = explode("-", $data);
-                $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
-                $week  = (int)date('W', $date);
+                //$ano=$request->getParam('ano');
+                $semana=$request->getParam('semana');
             
-                $sql = "SELECT * FROM nota_diaria WHERE id_cad =:id_cad AND semana=:week ORDER BY data ";
+                $sql = "SELECT * FROM nota_diaria WHERE id_cad =:id_cad AND semana=:semana  ORDER BY data ";
                 try {
                     $sth = $this->db->prepare($sql);
 
                     $sth->bindParam("id_cad",$idCad);
-                    $sth->bindParam("week",$week);
-                  
+                    $sth->bindParam("semana",$semana);
+                  //  $sth->bindParam("ano",$ano);
+
                     $sth->execute();
                     $result = $sth->fetchAll();
                     return $this->response->withJson($result);
@@ -310,6 +317,33 @@ $app->group('/api', function () use ($app) {
                       return $this->response->withJson("Erro ao Pesquisar As Perguntas do MiniMental ". $e->getCode() . $e, 500);
                   }
               });
+
+              $app->post('/inserirRespostaMiniMental', function ($request, $response) {
+                $id_pergunta_stc=$request->getParam('id_pergunta_stc');
+                $idCad=$request->getParam('id_cad');
+                $resposta=$request->getParam('resposta');
+                $observacao=$request->getParam('observacao');
+                $data=$request->getParam('data');
+                $clima=$request->getParam('clima');
+            
+                $sql = "INSERT  resposta_stc(id_pergunta_stc,id_cad,resposta,observacao,data,clima) VALUES(:id_pergunta_stc,:id_cad,:resposta,:observacao,:data,:clima)";
+                try {
+                    $sth = $this->db->prepare($sql);
+                    $sth->bindParam("id_pergunta_stc", $id_pergunta_stc);
+                    $sth->bindParam("id_cad",$idCad);
+                    $sth->bindParam("resposta",$resposta);
+                    $sth->bindParam("observacao",$observacao);
+                    $sth->bindParam("data",$data);
+                    $sth->bindParam("clima",$clima);
+                  
+                    $sth->execute();
+                    $status = "Resposta adicionada com sucesso!";
+                    
+                    return $this->response->withJson($status);
+                } catch (PDOException $e) {
+                    return $this->response->withJson("Erro ao adicionar a Resposta. " . $e->getCode(), 500);
+                }
+            });              
 
         });
     });
