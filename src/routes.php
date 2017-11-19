@@ -325,6 +325,8 @@ $app->group('/api', function () use ($app) {
                 $observacao=$request->getParam('observacao');
                 $data=$request->getParam('data');
                 $clima=$request->getParam('clima');
+
+                
             
                 $sql = "INSERT  resposta_stc(id_pergunta_stc,id_cad,resposta,observacao,data,clima) VALUES(:id_pergunta_stc,:id_cad,:resposta,:observacao,:data,:clima)";
                 try {
@@ -344,6 +346,87 @@ $app->group('/api', function () use ($app) {
                     return $this->response->withJson("Erro ao adicionar a Resposta. " . $e->getCode(), 500);
                 }
             });              
+
+            $app->post('/insertNotaDiaria', function ($request, $response) {
+                $idCad=$request->getParam('id_cad');
+                $resultadommes=$request->getParam('resultadommes');
+                $resltadotp=$request->getParam('resultadotp');
+                $data=$request->getParam('data');
+                $resultadotf=$request->getParam('resultadotf');
+               
+            
+                $sql = "select id_nota_diaria from nota_diaria where id_cad =:id_cad and data =:data";
+                try {
+                    $sth = $this->db->prepare($sql);
+                    $sth->bindParam("id_cad",$idCad);
+                    $sth->bindParam("data",$data);
+                    $sth->execute();
+                    $result = $sth->fetchObject();
+                    
+                   
+
+                } catch (PDOException $e) {
+                    return $this->response->withJson("Erro ao Pesquisar A Nota Diaria". $e->getCode() . $e, 500);
+                }
+
+           
+                if($result==""){
+                   
+                    $duedt = explode("-", $data);
+                    $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
+                    $week  = (int)date('W', $date);
+
+                    $sql = "INSERT  nota_diaria(id_cad,resultadommes,resultadotp,data,resultadotf,semana) VALUES(:id_cad,:resultadommes,:resultadotp,:data,:resultadotf,:semana)";
+                    try {
+                        $sth = $this->db->prepare($sql);
+                        $sth->bindParam("id_cad",$idCad);
+                        $sth->bindParam("resultadommes",$resultadommes);
+                        $sth->bindParam("resultadotp",$resltadotp);
+                        $sth->bindParam("data",$data);
+                        $sth->bindParam("resultadotf",$resultadotf);
+                        $sth->bindParam("semana",$week);
+                      
+                        $sth->execute();
+                        $status = "Notas adicionadas com sucesso!";
+                        
+                        return $this->response->withJson($status);
+                    } catch (PDOException $e) {
+                        return $this->response->withJson("Erro ao adicionar a Nota. " . $e->getCode(), 500);
+                    }
+                    
+
+                }
+                else{
+                    $sql = "UPDATE nota_diaria SET resultadommes=:resultadommes,resultadotp=:resultadotp,resultadotf=:resultadotf  WHERE (id_cad=:id_cad and data=:data)";
+                
+                            $sth = $this->db->prepare($sql);
+                            $sth->bindParam("resultadommes", $resultadommes);
+                            $sth->bindParam("id_cad",$idCad);
+                            $sth->bindParam("data",$data);
+                            $sth->bindParam("resultadotp",$resltadotp);
+                            $sth->bindParam("resultadotf",$resultadotf);
+                         
+                    
+                            $sth->execute();
+                    
+                            $result = $sth->rowCount();
+                    
+                            if ($result == 1) {
+                                $status = "Nota inserida com sucesso!";
+                                return $this->response->withJson($status);
+                            } else {
+                                $status = "Erro ao lançar a nota.";
+                                return $this->response->withJson($status);
+                            }
+               
+                }
+            
+               
+
+               /* 
+                */
+            });              
+
 
         });
     });
