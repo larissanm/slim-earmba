@@ -2,6 +2,7 @@
 
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Http\UploadedFile;
 
 //conexão remota
 $app->add(function ($req, $res, $next) {
@@ -11,6 +12,17 @@ $app->add(function ($req, $res, $next) {
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 });
+
+function moveUploadedFile($directory, UploadedFile $uploadedFile)
+{
+    $extension = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+    $basename = bin2hex(random_bytes(8)); // see http://php.net/manual/en/function.random-bytes.php
+    $filename = sprintf('%s.%0.8s', $basename, $extension);
+
+    $uploadedFile->moveTo($directory . DIRECTORY_SEPARATOR . $filename);
+
+    return $filename;
+}
 
 // Routes
 
@@ -271,7 +283,7 @@ $app->group('/api', function () use ($app) {
                         
                      });
 
-        //grupo medicamentos
+        //grupo relatorio
          $app->group('/relatorio', function () use ($app) {
              
             $app->get('/receberWeekNumber/[{data}]', function ($request, $response,$args) {
@@ -347,6 +359,35 @@ $app->group('/api', function () use ($app) {
                 }
             });              
 
+            $app->post('/inserirRespostaPessoal', function ($request, $response) {
+                $id_pergunta_vol=$request->getParam('id_pergunta_vol');
+                $idCad=$request->getParam('id_cad');
+                $resposta=$request->getParam('resposta');
+                $observacao=$request->getParam('observacao');
+                $data=$request->getParam('data');
+                $clima=$request->getParam('clima');
+
+                
+            
+                $sql = "INSERT  resposta_vol(id_pergunta_vol,id_cad,resposta,observacao,data,clima) VALUES(:id_pergunta_vol,:id_cad,:resposta,:observacao,:data,:clima)";
+                try {
+                    $sth = $this->db->prepare($sql);
+                    $sth->bindParam("id_pergunta_vol", $id_pergunta_vol);
+                    $sth->bindParam("id_cad",$idCad);
+                    $sth->bindParam("resposta",$resposta);
+                    $sth->bindParam("observacao",$observacao);
+                    $sth->bindParam("data",$data);
+                    $sth->bindParam("clima",$clima);
+                  
+                    $sth->execute();
+                    $status = "Resposta adicionada com sucesso!";
+                    
+                    return $this->response->withJson($status);
+                } catch (PDOException $e) {
+                    return $this->response->withJson("Erro ao adicionar a Resposta. " . $e->getCode(), 500);
+                }
+            });            
+
             $app->post('/insertNotaDiaria', function ($request, $response) {
                 $idCad=$request->getParam('id_cad');
                 $resultadommes=$request->getParam('resultadommes');
@@ -420,13 +461,102 @@ $app->group('/api', function () use ($app) {
                             }
                
                 }
-            
-               
-
                /* 
                 */
             });              
 
+
+        });
+        $app->group('/pergunta', function () use ($app) {
+            
+            $app->post('/inserirPergunta', function ($request, $response) {
+                $idCad=$request->getParam('id_cad');
+                $pergunta_vol=$request->getParam('pergunta_vol');
+                $resposta_vol=$request->getParam('resposta_vol');
+                $img=$request->getParam('img');
+                $sql = "INSERT  teste_vol(id_cad,pergunta_vol,resposta_vol,img) VALUES(:id_cad,:pergunta_vol,:resposta_vol,:img)";
+                try {
+                    $sth = $this->db->prepare($sql);
+                    $sth->bindParam("id_cad",$idCad);
+                    $sth->bindParam("pergunta_vol",$pergunta_vol);
+                    $sth->bindParam("resposta_vol",$resposta_vol);
+                    $sth->bindParam("img",$img);
+                    
+                  
+                    $sth->execute();
+                    $status = "Pergunta adicionada com sucesso!";
+                    
+                    return $this->response->withJson($status);
+                } catch (PDOException $e) {
+                    return $this->response->withJson("Erro ao adicionar a Pergunta. " . $e->getCode(), 500);
+                }
+                
+
+             /*   $img=$request->getParam('img');
+             /*   if($img==""){
+                    return $this->response->withJson("VAzio");
+                }
+                else{
+                    return $this->response->withJson($img);
+                }
+               $directory="/";
+                $filename = moveUploadedFile($directory, $img);
+               
+         */
+                 //do check for image types here and imprve security.You could restrict to only png/jpg/gif file formats only.Depending on what you need. 
+  
+             /*   if(!isset($uploadedFiles)
+                {
+                         $error['status']="error";
+                      $error['msg']="Encountered an error: while uploading.no FILE UPLOADED";
+                      return $this->response->withJson("Encountered an error: while uploading.no FILE UPLOADED");
+                }
+                else
+                {
+                    $imgs=array();
+                    if($_FILES['img']['error']==0)
+                    {
+                        $name=uniqid('img-'.date('Ymd').'-');
+                        if(move_uploaded_file($_FILES['img']['tmp_name'],'posters/'.$name)==true)
+                        {
+                            $old_neem=$_FILES['img']['name'];
+         //make sure you have a folder called uploads where this php file is
+                            $imgs[]=array('url' => '/uploads/' . $name, 'name' =>$old_neem);
+                            $post_success="memata";
+                            if($post_success)
+                            {
+                                 $error['status']="success";
+                              $error['msg']="Image updated successfully";
+                              return $this->response->withJson("Image updated successfully");
+                            }
+                            else{
+                            $error['status']="error";
+                         $error['msg']="Encountered an error: while uploading.no FILE UPLOADED";
+                         return $this->response->withJson("Encountered an error: while uploading.no FILE UPLOADED");
+                     }
+                        }
+                    }
+                }
+                */
+                
+            });  
+            
+            $app->get('/pesquisarPergunta/[{id_cad}]', function ($request, $response,$args) {
+                
+                  $idCad=$request->getParam('id_cad');
+                  $sql = "select * from teste_vol where id_cad = :id_cad";
+                  try {
+                      $sth = $this->db->prepare($sql);
+                      $sth->bindParam("id_cad", $idCad);
+                     
+      
+                      $sth->execute();
+                      $result = $sth->fetchAll();
+                      return $this->response->withJson($result);
+                  } catch (PDOException $e) {
+                      return $this->response->withJson("Erro ao Pesquisar As Perguntas ". $e->getCode() . $e, 500);
+                  }
+              });
 
         });
     });
