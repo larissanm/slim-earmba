@@ -71,7 +71,7 @@ $app->group('/api', function () use ($app) {
                 $horaTermino=$request->getParam('hora_termino');
                 $data=$request->getParam('data');
 
-                $sql = "INSERT  rotina(nome,id_cad,clima,observacao,local,hora_inicio,hora_termino,data) VALUES(:nome,:id_cad,:clima,:observacao,:local,:hora_inicio,:hora_termino,:data)";
+                $sql = "INSERT  rotina(nome,id,clima,observacao,local,hora_inicio,hora_termino,data) VALUES(:nome,:id_cad,:clima,:observacao,:local,:hora_inicio,:hora_termino,:data)";
                 try {
                     $sth = $this->db->prepare($sql);
                     $sth->bindParam("nome", $nome);
@@ -96,7 +96,7 @@ $app->group('/api', function () use ($app) {
                 
                   $idCad=$request->getParam('id_cad');
                   $data=$request->getParam('data');
-                  $sql = "select * from rotina where id_cad = :id_cad and data = :data";
+                  $sql = "select * from rotina where id = :id_cad and data = :data";
                   try {
                       $sth = $this->db->prepare($sql);
                       $sth->bindParam("id_cad", $idCad);
@@ -185,7 +185,7 @@ $app->group('/api', function () use ($app) {
                             $principio_ativo=$request->getParam('principio_ativo');
                             $intervalo=$request->getParam('intervalo');
                         
-                            $sql = "INSERT  medicamentos(nome,id_cad,dosagem,miligramagem,principio_ativo,intervalo) VALUES(:nome,:id_cad,:dosagem,:miligramagem,:principio_ativo,:intervalo)";
+                            $sql = "INSERT  medicamentos(nome,id,dosagem,miligramagem,principio_ativo,intervalo) VALUES(:nome,:id_cad,:dosagem,:miligramagem,:principio_ativo,:intervalo)";
                             try {
                                 $sth = $this->db->prepare($sql);
                                 $sth->bindParam("nome", $nome);
@@ -207,7 +207,7 @@ $app->group('/api', function () use ($app) {
                         $app->get('/pesquisar/[{id_cad}]', function ($request, $response,$args) {
                             
                               $idCad=$request->getParam('id_cad');
-                              $sql = "select * from medicamentos where id_cad = :id_cad";
+                              $sql = "select * from medicamentos where id = :id_cad";
                               try {
                                   $sth = $this->db->prepare($sql);
                                   $sth->bindParam("id_cad", $idCad);
@@ -299,7 +299,7 @@ $app->group('/api', function () use ($app) {
                 //$ano=$request->getParam('ano');
                 $semana=$request->getParam('semana');
             
-                $sql = "SELECT * FROM nota_diaria WHERE id_cad =:id_cad AND semana=:semana  ORDER BY data ";
+                $sql = "SELECT * FROM nota_diaria WHERE id =:id_cad AND semana=:semana  ORDER BY data ";
                 try {
                     $sth = $this->db->prepare($sql);
 
@@ -340,7 +340,7 @@ $app->group('/api', function () use ($app) {
 
                 
             
-                $sql = "INSERT  resposta_stc(id_pergunta_stc,id_cad,resposta,observacao,data,clima) VALUES(:id_pergunta_stc,:id_cad,:resposta,:observacao,:data,:clima)";
+                $sql = "INSERT  resposta_stc(id_pergunta_stc,id,resposta,observacao,data,clima) VALUES(:id_pergunta_stc,:id_cad,:resposta,:observacao,:data,:clima)";
                 try {
                     $sth = $this->db->prepare($sql);
                     $sth->bindParam("id_pergunta_stc", $id_pergunta_stc);
@@ -369,7 +369,7 @@ $app->group('/api', function () use ($app) {
 
                 
             
-                $sql = "INSERT  resposta_vol(id_pergunta_vol,id_cad,resposta,observacao,data,clima) VALUES(:id_pergunta_vol,:id_cad,:resposta,:observacao,:data,:clima)";
+                $sql = "INSERT  resposta_vol(id_pergunta_vol,id,resposta,observacao,data,clima) VALUES(:id_pergunta_vol,:id_cad,:resposta,:observacao,:data,:clima)";
                 try {
                     $sth = $this->db->prepare($sql);
                     $sth->bindParam("id_pergunta_vol", $id_pergunta_vol);
@@ -396,7 +396,7 @@ $app->group('/api', function () use ($app) {
                 $resultadotf=$request->getParam('resultadotf');
                
             
-                $sql = "select id_nota_diaria from nota_diaria where id_cad =:id_cad and data =:data";
+                $sql = "select id_nota_diaria from nota_diaria where id =:id_cad and data =:data order by data";
                 try {
                     $sth = $this->db->prepare($sql);
                     $sth->bindParam("id_cad",$idCad);
@@ -417,7 +417,7 @@ $app->group('/api', function () use ($app) {
                     $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
                     $week  = (int)date('W', $date);
 
-                    $sql = "INSERT  nota_diaria(id_cad,resultadommes,resultadotp,data,resultadotf,semana) VALUES(:id_cad,:resultadommes,:resultadotp,:data,:resultadotf,:semana)";
+                    $sql = "INSERT  nota_diaria(id,resultadommes,resultadotp,data,resultadotf,semana) VALUES(:id_cad,:resultadommes,:resultadotp,:data,:resultadotf,:semana)";
                     try {
                         $sth = $this->db->prepare($sql);
                         $sth->bindParam("id_cad",$idCad);
@@ -438,7 +438,7 @@ $app->group('/api', function () use ($app) {
 
                 }
                 else{
-                    $sql = "UPDATE nota_diaria SET resultadommes=:resultadommes,resultadotp=:resultadotp,resultadotf=:resultadotf  WHERE (id_cad=:id_cad and data=:data)";
+                    $sql = "UPDATE nota_diaria SET resultadommes=:resultadommes,resultadotp=:resultadotp,resultadotf=:resultadotf  WHERE (id=:id_cad and data=:data)";
                 
                             $sth = $this->db->prepare($sql);
                             $sth->bindParam("resultadommes", $resultadommes);
@@ -474,7 +474,7 @@ $app->group('/api', function () use ($app) {
                 $pergunta_vol=$request->getParam('pergunta_vol');
                 $resposta_vol=$request->getParam('resposta_vol');
                 $img=$request->getParam('img');
-                $sql = "INSERT  teste_vol(id_cad,pergunta_vol,resposta_vol,img) VALUES(:id_cad,:pergunta_vol,:resposta_vol,:img)";
+                $sql = "INSERT  teste_vol(id,pergunta_vol,resposta_vol,img) VALUES(:id_cad,:pergunta_vol,:resposta_vol,:img)";
                 try {
                     $sth = $this->db->prepare($sql);
                     $sth->bindParam("id_cad",$idCad);
@@ -544,7 +544,7 @@ $app->group('/api', function () use ($app) {
             $app->get('/pesquisarPergunta/[{id_cad}]', function ($request, $response,$args) {
                 
                   $idCad=$request->getParam('id_cad');
-                  $sql = "select * from teste_vol where id_cad = :id_cad";
+                  $sql = "select * from teste_vol where id = :id_cad";
                   try {
                       $sth = $this->db->prepare($sql);
                       $sth->bindParam("id_cad", $idCad);
@@ -557,6 +557,41 @@ $app->group('/api', function () use ($app) {
                       return $this->response->withJson("Erro ao Pesquisar As Perguntas ". $e->getCode() . $e, 500);
                   }
               });
+
+              $app->post('/inativar', function ($request, $response, $args) {
+                
+                $id_pergunta_vol=$request->getParam('id_pergunta_vol');
+        
+               
+            
+                try {
+                    $sql = "UPDATE rotina SET ativado:=ativado WHERE id_pergunta_vol=:id_pergunta_vol";
+            
+                 
+                    
+                    $sth = $this->db->prepare($sql);
+                    
+                    $sth->bindParam("id_pergunta_vol",$id_pergunta_vol);
+                    
+                    $sth->bindParam("ativado",0);
+                   
+            
+                    $sth->execute();
+            
+                    $result = $sth->rowCount();
+            
+                    if ($result == 1) {
+                        $status = "pergunta deletada com sucesso!";
+                        return $this->response->withJson($status);
+                    } else {
+                        $status = "Erro ao deletar a pergunta.";
+                        return $this->response->withJson($status);
+                    }
+                } catch (Exception $e) {
+                    return $this->response->withJson("Ocorreu algum erro interno." . $e->getCode(), 500);
+                }
+            });
+
 
         });
     });
